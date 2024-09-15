@@ -8,6 +8,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 
 from Utils.response import SuccessResponse, FailureResponse
+from loggers import http_server_logger
 
 
 def handle_error(name=None):
@@ -18,7 +19,9 @@ def handle_error(name=None):
                 result = func(self, request, *args, **kwargs)
                 return SuccessResponse(result.data if isinstance(result, Response) else result)
             except Exception as e:
-                traceback.print_exc()
+                err = traceback.format_exc()
+                print(err)
+                http_server_logger.error(err)
                 return FailureResponse(err=str(e))
 
         return wrapper
