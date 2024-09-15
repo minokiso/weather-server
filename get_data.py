@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 
 import django
 
+from loggers import http_server_logger
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'server.settings')
 django.setup()
 import requests
@@ -69,7 +71,9 @@ def main():
             Log.objects.create(last_build_time=last_build_time)
             print("读取成功", "last_build_time:", last_build_time)
     except Exception as e:
-        traceback.print_exc()
+        err = traceback.format_exc()
+        http_server_logger.error(err)
+        print(err)
 
 
 if __name__ == '__main__':
