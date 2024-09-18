@@ -16,6 +16,8 @@ from apps.public.models import Weather3h, Log
 def get_data():
     try:
         with atomic():
+            print("开始获取数据")
+            http_server_logger.info("开始获取数据")
             thai_time = datetime.utcnow() + timedelta(hours=7)
             log = Log.objects.filter(last_build_time__day=thai_time.day)
             if log.exists():
