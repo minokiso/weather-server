@@ -65,7 +65,7 @@ except Exception as e:
 
 LANGUAGE_CODE = 'en-us'
 
-# TIME_ZONE = 'Asia/Shanghai'
+TIME_ZONE = 'Asia/Bangkok'
 
 USE_I18N = True
 

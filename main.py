@@ -1,22 +1,19 @@
 import os
 import traceback
-from datetime import datetime, timedelta
-
+import requests
 import django
-
+from datetime import datetime, timedelta
+from apscheduler.schedulers.blocking import BlockingScheduler
 from loggers import http_server_logger
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'server.settings')
+
 django.setup()
-import requests
 from django.db.transaction import atomic
-
-from Utils.viewset import handle_error
-
 from apps.public.models import Weather3h, Log
 
 
-def main():
+def get_data():
     try:
         with atomic():
             thai_time = datetime.utcnow() + timedelta(hours=7)
@@ -77,4 +74,13 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    scheduler = BlockingScheduler()
+    scheduler.add_job(get_data, 'cron', hour=11, minute=28)
+    scheduler.add_job(get_data, 'cron', hour=8, minute=10)
+    scheduler.add_job(get_data, 'cron', hour=8, minute=20)
+    try:
+        print("scheduler start")
+        http_server_logger.debug("scheduler start")
+        scheduler.start()
+    except (KeyboardInterrupt, SystemExit):
+        pass
