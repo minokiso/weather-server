@@ -19,7 +19,10 @@ def get_data():
             thai_time = datetime.utcnow() + timedelta(hours=7)
             log = Log.objects.filter(last_build_time__day=thai_time.day)
             if log.exists():
-                return print("数据已存在", "last_build_time:", log.first().last_build_time)
+                print_str = f"数据已存在, last_build_time: {log.first().last_build_time}"""
+                print(print_str)
+                http_server_logger.info(print_str)
+                return
             url = "https://data.tmd.go.th/api/Weather3Hours/V2/"
             uid = "u672417591283"
             ukey = "cf81a2f0dd39dedfa42700e670b70781"
@@ -66,7 +69,9 @@ def get_data():
                 ))
             Weather3h.objects.bulk_create(weather3h)
             Log.objects.create(last_build_time=last_build_time)
-            print("读取成功", "last_build_time:", last_build_time)
+            print_str = f"读取成功, last_build_time: {last_build_time}"
+            print(print_str)
+            http_server_logger.info(print_str)
     except Exception as e:
         err = traceback.format_exc()
         http_server_logger.error(err)
@@ -75,7 +80,7 @@ def get_data():
 
 if __name__ == '__main__':
     scheduler = BlockingScheduler()
-    scheduler.add_job(get_data, 'cron', hour=11, minute=28)
+    scheduler.add_job(get_data, 'cron', hour=8, minute=0)
     scheduler.add_job(get_data, 'cron', hour=8, minute=10)
     scheduler.add_job(get_data, 'cron', hour=8, minute=20)
     try:

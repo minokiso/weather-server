@@ -14,3 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua
 COPY . .
 
 CMD ["python", "main.py"]
+# docker run -d --name weather-server -v ./logs/http_server.log:/app/logs/http_server.log -e PYTHONUNBUFFERED=1 weather-server
